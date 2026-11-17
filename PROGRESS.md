@@ -3,7 +3,7 @@
 | Phase | Status | Commit summary |
 | --- | --- | --- |
 | 1. Project setup | ✅ Done | Flutter 3.50 project, strict lints, Riverpod, go_router, env config, 7 service interfaces with fakes, CI |
-| 2. Core logic | ⏳ | |
+| 2. Core logic | ✅ Done | Immutable board model, move rules, 3 obstacle rule modules (hidden, locked, frozen), win/stuck, session with undo, move limits, boosters; 99% coverage |
 | 3. Solver + generator + 1,000 levels | ⏳ | |
 | 4. Playable game | ⏳ | |
 | 5. Economy + bazaar + daily | ⏳ | |
