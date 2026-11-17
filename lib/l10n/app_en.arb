@@ -1,0 +1,17 @@
+{
+  "@@locale": "en",
+  "appTitle": "Bazaar Sort",
+  "@appTitle": {"description": "App name"},
+  "loading": "Opening the bazaar…",
+  "playLevel": "Play – Level {level}",
+  "@playLevel": {"placeholders": {"level": {"type": "int"}}},
+  "level": "Level {level}",
+  "@level": {"placeholders": {"level": {"type": "int"}}},
+  "coins": "{count} coins",
+  "@coins": {"placeholders": {"count": {"type": "int"}}},
+  "shop": "Shop",
+  "settings": "Settings",
+  "bazaar": "Bazaar",
+  "daily": "Daily",
+  "home": "Home"
+}

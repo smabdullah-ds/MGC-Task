@@ -1,0 +1,22 @@
+include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  exclude:
+    - build/**
+    - lib/l10n/gen/**
+    - "**/*.g.dart"
+    - android/**
+    - ios/**
+  errors:
+    todo: warning
+
+linter:
+  rules:
+    # Doc comments are required on public APIs in core/ and services/;
+    # widgets and screens are self-describing.
+    public_member_api_docs: false
+    lines_longer_than_80_chars: false
