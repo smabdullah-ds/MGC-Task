@@ -7,7 +7,7 @@
 | 3. Solver + generator + 1,000 levels | ✅ Done | A* solver (admissible runs heuristic, canonical hashing, node/time limits, weighted fallback), seeded generator + saw-tooth difficulty curve (Remote Config overridable), shuffle booster, `tool/generate_levels.dart`; 1,000 levels bundled, 97% proven optimal, every one replay-verified in tests |
 | 4. Playable game | ✅ Done | Flame board (vector `ItemSkin`, arc moves ~250 ms, lift/shake/pop, sparkles, confetti), tap + drag input, HUD + booster bar, win/fail/pause panels, tutorial coach + guide hand, synthesized SFX/music, haptics, Hive save with atomic writes; widget tests for win and fail flows |
 | 5. Economy + bazaar + daily | ✅ Done | Coins/boosters economy, 4 bazaar areas (28 items) with area rewards, 7-day login calendar, date-seeded daily challenge + streak, rewarded free spin, shop with idempotent purchase granting, VIP daily bonus, 48 h starter pack |
-| 6. Real SDKs | ⏳ | |
+| 6. Real SDKs | ✅ Done | Firebase (Analytics, Crashlytics, Remote Config), UMP + ATT consent, AdMob with AppLovin/Unity/Meta/Mintegral mediation adapters (test IDs), RevenueCat; each used only when configured, fakes otherwise |
 | 7. Analytics, Remote Config, push | ⏳ | |
 | 8. Polish | ⏳ | |
 | 9. Release prep | ⏳ | |
@@ -64,3 +64,13 @@ The release APK is signed with the debug key until Phase 9 adds the upload-key c
 - **Purchases**: each transaction id is granted once (`PurchaseState.grantedTransactions`); restores re-apply only entitlements (never coins); refunds remove entitlements; pending purchases are granted when the store update arrives.
 - **Screens**: Bazaar (area sections, restore with animation, area-complete dialog, banner slot behind a Remote Config switch), Daily (calendar, challenge, spin wheel), Shop (store-localized prices, owned states, restore purchases, starter-pack countdown).
 - **Booster bundle** (`booster_bundle`, $2.99, 3 of each booster) added to satisfy "booster bundles" in the shop spec — not in the original price table, so create it in the stores or remove it from `Products.all`.
+
+## Phase 6 details
+
+- `lib/app/bootstrap.dart` chooses real or fake services: Firebase only with `FIREBASE_ENABLED=true` and successful init; AdMob + UMP/ATT on Android/iOS unless `ADS_ENABLED=false`; RevenueCat only when a key is set. Tests always use fakes.
+- `AdMobAdsService`: preloads rewarded/interstitial/app-open, exponential backoff 2 s → 64 s, paid-event revenue (`value_micros`, currency, mediation network) on the event stream, general-audience request configuration (no child/teen treatment, max rating T).
+- `UmpConsentService`: UMP update + form, then ATT on iOS, *then* ads initialise. "Manage consent" re-opens the UMP privacy options form.
+- `RevenueCatIapService`: entitlements `no_ads` (remove_ads, starter_pack) and `vip` (vip_weekly); pending → purchased and refunds arrive through the customer-info listener; cancelled / pending / already-owned map to the shared `PurchaseStatus`.
+- Android: Firebase Gradle plugins applied only if `android/app/google-services.json` exists; Mintegral Maven repo; core-library desugaring; AdMob app id from `ADMOB_APP_ID_ANDROID` (key.properties or env), test id by default.
+- iOS: `GADApplicationIdentifier` from `ADMOB_APP_ID_IOS` (git-ignored `ios/Flutter/Secrets.xcconfig`), ATT usage string, SKAdNetwork ids for Google + the four mediation networks.
+- **Not verified on a device**: this container has no Android SDK (dl.google.com is blocked here) and no Xcode, so native builds must be run on your machine.

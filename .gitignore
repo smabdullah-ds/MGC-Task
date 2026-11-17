@@ -62,3 +62,4 @@ ios/firebase_app_id_file.json
 lib/firebase_options.dart
 # Generated localizations are rebuilt by `flutter gen-l10n`
 lib/l10n/gen/
+ios/Flutter/Secrets.xcconfig
