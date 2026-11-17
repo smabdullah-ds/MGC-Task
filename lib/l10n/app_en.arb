@@ -342,5 +342,39 @@
   "notifPromptTitle": "Want a friendly reminder?",
   "notifPromptBody": "We'll tell you when your daily reward is ready or your streak is at risk. At most once a day, never at night.",
   "notifPromptYes": "Yes, remind me",
-  "notifPromptNo": "Not now"
+  "notifPromptNo": "Not now",
+  "settingsSound": "Sound effects",
+  "settingsMusic": "Music",
+  "settingsHaptics": "Vibration",
+  "settingsColorblind": "Colorblind mode",
+  "settingsColorblindHint": "Adds a unique symbol to every item.",
+  "settingsNotifications": "Reminders",
+  "settingsNotificationsHint": "At most once a day, never at night.",
+  "settingsLanguage": "Language",
+  "settingsLanguageSystem": "Device language",
+  "settingsPrivacy": "Privacy policy",
+  "settingsConsent": "Manage ad consent",
+  "settingsSupport": "Contact support",
+  "settingsVersion": "Version {version}",
+  "settingsAbout": "About",
+  "settingsGameplay": "Gameplay",
+  "settingsAudio": "Sound",
+  "settingsPrivacySection": "Privacy",
+  "settingsRestore": "Restore purchases",
+  "couldNotOpen": "Couldn't open the link.",
+  "@settingsVersion": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "boardLabel": "Game board with {count} shelves",
+  "@boardLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -5,6 +5,7 @@ import 'package:bazaar_sort/app/theme.dart';
 import 'package:bazaar_sort/features/daily/reminder_scheduler.dart';
 import 'package:bazaar_sort/features/player/player_store.dart';
 import 'package:bazaar_sort/features/player/session_tasks.dart';
+import 'package:bazaar_sort/features/settings/locales.dart';
 import 'package:bazaar_sort/l10n/gen/app_localizations.dart';
 import 'package:bazaar_sort/services/service_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,8 +57,14 @@ class _BazaarSortAppState extends ConsumerState<BazaarSortApp> {
       theme: buildTheme(),
       routerConfig: ref.watch(routerProvider),
       locale: localeCode == null ? null : Locale(localeCode),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
+      // Material widgets come from material_ui, whose localizations live in
+      // its own GlobalMaterialLocalizations (the generated list points at
+      // flutter_localizations' copies, which material_ui widgets don't read).
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
+      supportedLocales: appSupportedLocales,
     );
   }
 }

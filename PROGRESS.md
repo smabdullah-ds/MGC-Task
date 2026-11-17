@@ -9,7 +9,7 @@
 | 5. Economy + bazaar + daily | ✅ Done | Coins/boosters economy, 4 bazaar areas (28 items) with area rewards, 7-day login calendar, date-seeded daily challenge + streak, rewarded free spin, shop with idempotent purchase granting, VIP daily bonus, 48 h starter pack |
 | 6. Real SDKs | ✅ Done | Firebase (Analytics, Crashlytics, Remote Config), UMP + ATT consent, AdMob with AppLovin/Unity/Meta/Mintegral mediation adapters (test IDs), RevenueCat; each used only when configured, fakes otherwise |
 | 7. Analytics, Remote Config, push | ✅ Done | Every spec event with consistent params, ad fill/revenue bridge, user properties (country tier, payer, ad-free, experiment), Remote Config refresh re-applies tuning live, opt-in reminders (≤ 1/day, quiet hours 22–09) + FCM registration |
-| 8. Polish | ⏳ | |
+| 8. Polish | ✅ Done | Full settings screen, 8 locales scaffolded (en shipped, others in debug/QA builds) with RTL verified, material_ui localization fix, cached vector art for low-end devices, Dynamic Type at 1.6× verified on every screen |
 | 9. Release prep | ⏳ | |
 
 ## Decisions log
@@ -81,3 +81,12 @@ The release APK is signed with the debug key until Phase 9 adds the upload-key c
 - **User properties**: install_country_tier (tier1 = US/UK/CA/DE/AU + similar), payer, ad_free, exp_group.
 - **Remote Config**: all tuning keys in `config/remote_config_defaults.dart`; after a successful fetch the economy and difficulty providers are invalidated so new values apply without a restart. A/B tests: create them in Firebase on these keys and set `exp_group` per variant (see KPI.md).
 - **Reminders**: `ReminderPlanner` (pure, tested) + `ReminderScheduler`. Asked once in-game after level 5; only then is the OS permission requested. Rescheduled every time the app goes to the background.
+
+## Phase 8 details
+
+- **Settings**: sound, music, haptics, colourblind mode, reminders, language (endonyms), privacy policy link, "Manage ad consent" (UMP privacy options form), restore purchases, support e-mail (pre-filled subject with version), version.
+- **Localization**: English complete; `ur`, `ar`, `de`, `es`, `fr`, `id`, `tr` have ~35 core strings each (first drafts — get them reviewed) and fall back to English for the rest (`build/untranslated_messages.json` lists what's missing). Release builds only offer `shippedLanguages` (`lib/features/settings/locales.dart`); add a code there once its translation is complete. Debug builds, or `--dart-define=ALL_LOCALES=true`, show every locale for QA.
+- **Fix**: Material moved to the `material_ui` package; its localizations are registered via `GlobalMaterialLocalizations.delegates` from that package (the generated list pointed at `flutter_localizations`' copies, so Arabic/Urdu Material strings were missing).
+- **RTL**: Arabic verified on home, gameplay, shop, bazaar, daily and settings with no overflow; directional paddings throughout. The board itself stays LTR by design (shelf order is spatial, not text).
+- **Performance**: item and shelf art is recorded once into `Picture`s (`PictureCache`, LRU 256) and replayed each frame; lock labels cache their `TextPainter`; the background pattern sits in its own `RepaintBoundary`. Solver work always runs in isolates.
+- **Accessibility**: colourblind symbols on every good, 48 dp minimum targets (board hit areas included), semantics labels on buttons, coin pill, stars and the board, layouts that grow with system font size.

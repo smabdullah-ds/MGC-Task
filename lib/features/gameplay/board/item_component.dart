@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:bazaar_sort/core/game_logic/item.dart';
+import 'package:bazaar_sort/features/gameplay/board/picture_cache.dart';
 import 'package:bazaar_sort/features/gameplay/skins/item_skin.dart';
 import 'package:flame/components.dart';
 
@@ -128,13 +129,22 @@ class ItemComponent extends PositionComponent {
         0,
       );
     }
-    final rect = Offset.zero & Size(size.x, size.y);
-    if (item.isHidden) {
-      skin.paintHidden(canvas, rect);
-    } else {
-      skin.paintItem(canvas, rect, item.type, colorblind: colorblind());
-    }
-    if (item.isFrozen) skin.paintFrozen(canvas, rect);
+    final side = size.x;
+    final cb = colorblind();
+    final picture = PictureCache.board.get(
+      'item:${item.bits}:${side.toStringAsFixed(1)}:$cb',
+      Size(side, side),
+      (c) {
+        final rect = Offset.zero & Size(side, side);
+        if (item.isHidden) {
+          skin.paintHidden(c, rect);
+        } else {
+          skin.paintItem(c, rect, item.type, colorblind: cb);
+        }
+        if (item.isFrozen) skin.paintFrozen(c, rect);
+      },
+    );
+    canvas.drawPicture(picture);
   }
 
   static double _easeInOut(double t) =>

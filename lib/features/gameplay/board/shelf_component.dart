@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:bazaar_sort/app/palette.dart';
+import 'package:bazaar_sort/features/gameplay/board/picture_cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/painting.dart' show TextPainter, TextSpan, TextStyle;
@@ -97,6 +98,12 @@ class ShelfComponent extends PositionComponent
   }
 
   @override
+  void onRemove() {
+    _lockText?.dispose();
+    super.onRemove();
+  }
+
+  @override
   void render(Canvas canvas) {
     if (_shakeT < 1) {
       canvas.translate(
@@ -136,8 +143,20 @@ class ShelfComponent extends PositionComponent
       );
     }
 
+    canvas.drawPicture(
+      PictureCache.board.get(
+        'shelf:${w.toStringAsFixed(1)}x${h.toStringAsFixed(1)}',
+        Size(w, h),
+        (c) => _paintWood(c, w, h, outer),
+      ),
+    );
+
+    if (locksRemaining > 0) _renderLock(canvas, w, h);
+  }
+
+  static void _paintWood(Canvas c, double w, double h, RRect outer) {
     // Wood frame and darker back panel.
-    canvas
+    c
       ..drawRRect(
         outer,
         Paint()
@@ -159,19 +178,21 @@ class ShelfComponent extends PositionComponent
     // Shelf boards between slots.
     final board = Paint()..color = const Color(0x33000000);
     for (var y = h * 0.25; y < h * 0.9; y += h * 0.22) {
-      canvas.drawLine(Offset(w * 0.1, y), Offset(w * 0.9, y), board);
+      c.drawLine(Offset(w * 0.1, y), Offset(w * 0.9, y), board);
     }
     // Front lip.
-    canvas.drawRRect(
+    c.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromLTWH(-w * 0.04, h - w * 0.2, w * 1.08, w * 0.2),
         Radius.circular(w * 0.08),
       ),
       Paint()..color = Palette.woodDark,
     );
-
-    if (locksRemaining > 0) _renderLock(canvas, w, h);
   }
+
+  TextPainter? _lockText;
+  int _lockTextValue = -1;
+  double _lockTextSize = 0;
 
   void _renderLock(Canvas canvas, double w, double h) {
     canvas.drawRRect(
@@ -202,17 +223,25 @@ class ShelfComponent extends PositionComponent
         RRect.fromRectAndRadius(body, Radius.circular(w * 0.06)),
         Paint()..color = Palette.saffron,
       );
-    final tp = TextPainter(
-      text: TextSpan(
-        text: '$locksRemaining',
-        style: TextStyle(
-          color: Palette.ink,
-          fontSize: w * 0.28,
-          fontWeight: FontWeight.w900,
+    if (_lockText == null ||
+        _lockTextValue != locksRemaining ||
+        _lockTextSize != w) {
+      _lockText?.dispose();
+      _lockText = TextPainter(
+        text: TextSpan(
+          text: '$locksRemaining',
+          style: TextStyle(
+            color: Palette.ink,
+            fontSize: w * 0.28,
+            fontWeight: FontWeight.w900,
+          ),
         ),
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
+        textDirection: TextDirection.ltr,
+      )..layout();
+      _lockTextValue = locksRemaining;
+      _lockTextSize = w;
+    }
+    final tp = _lockText!;
     tp.paint(canvas, c - Offset(tp.width / 2, tp.height / 2));
   }
 }

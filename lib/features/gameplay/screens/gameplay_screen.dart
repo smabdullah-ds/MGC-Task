@@ -552,7 +552,10 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen> {
                       child: Stack(
                         children: [
                           Positioned.fill(
-                            child: GameWidget<BoardGame>(game: game),
+                            child: Semantics(
+                              label: l10n.boardLabel(c.board.shelfCount),
+                              child: GameWidget<BoardGame>(game: game),
+                            ),
                           ),
                           if (_coachStep != null)
                             Positioned(
