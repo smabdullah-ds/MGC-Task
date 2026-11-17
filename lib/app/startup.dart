@@ -1,10 +1,16 @@
 import 'dart:async';
+import 'dart:ui' show PlatformDispatcher;
 
+import 'package:bazaar_sort/config/remote_config_defaults.dart';
 import 'package:bazaar_sort/features/player/player_store.dart';
 import 'package:bazaar_sort/features/player/session_tasks.dart';
 import 'package:bazaar_sort/features/shop/shop_controller.dart';
+import 'package:bazaar_sort/services/ads/ad_analytics_bridge.dart';
 import 'package:bazaar_sort/services/ads/ad_types.dart';
+import 'package:bazaar_sort/services/analytics/country_tier.dart';
+import 'package:bazaar_sort/services/analytics/game_analytics.dart';
 import 'package:bazaar_sort/services/consent/consent_service.dart';
+import 'package:bazaar_sort/services/remote_config/tuning.dart';
 import 'package:bazaar_sort/services/service_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -52,6 +58,18 @@ class Startup {
     }
     _ref.read(gameAnalyticsProvider).consentResult(result: consent!.label);
 
+    // Ad lifecycle → analytics (fill, revenue, failures).
+    final bridge = AdAnalyticsBridge(
+      _ref.read(adsServiceProvider),
+      _ref.read(gameAnalyticsProvider),
+    );
+    _ref.onDispose(() => unawaited(bridge.dispose()));
+
+    final country = PlatformDispatcher.instance.locale.countryCode;
+    _ref
+        .read(gameAnalyticsProvider)
+        .userProperty(UserProp.countryTier, CountryTier.of(country));
+
     // Background: never awaited by the splash.
     unawaited(_background(consent!));
   }
@@ -67,10 +85,21 @@ class Startup {
     }
 
     await Future.wait([
-      guard(
-        'remote_config',
-        () => _ref.read(remoteConfigServiceProvider).refresh(),
-      ),
+      guard('remote_config', () async {
+        final rc = _ref.read(remoteConfigServiceProvider);
+        if (await rc.refresh()) {
+          // Re-read tuning values everywhere.
+          _ref
+            ..invalidate(economyConfigProvider)
+            ..invalidate(difficultyCurveProvider);
+        }
+        _ref
+            .read(gameAnalyticsProvider)
+            .userProperty(
+              UserProp.experiment,
+              rc.getString(RcKeys.experimentGroup),
+            );
+      }),
       guard(
         'ads',
         () => _ref

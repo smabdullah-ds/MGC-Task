@@ -177,8 +177,7 @@ class LevelFlow {
   /// Shows a rewarded ad and grants the 2× coins bonus once.
   Future<bool> doubleCoins(GeneratedLevel level) async {
     final ads = _ref.read(adsServiceProvider);
-    final analytics = _ref.read(gameAnalyticsProvider)
-      ..adRequest(format: 'rewarded', placement: 'double_coins');
+    final analytics = _ref.read(gameAnalyticsProvider);
     if (!await ads.showRewarded(RewardedPlacement.doubleCoins)) return false;
     onRewardedShown();
     analytics.adRewardGranted(placement: 'double_coins');
@@ -210,9 +209,6 @@ class LevelFlow {
     if (decision != InterstitialDecision.show) return;
     final ads = _ref.read(adsServiceProvider);
     if (!ads.isInterstitialReady) return;
-    _ref
-        .read(gameAnalyticsProvider)
-        .adRequest(format: 'interstitial', placement: 'level_complete');
     final feedback = _ref.read(feedbackServiceProvider)..pauseMusic();
     final shown = await ads.showInterstitial('level_complete');
     feedback.resumeMusic();

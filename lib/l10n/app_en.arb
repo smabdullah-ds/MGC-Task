@@ -332,5 +332,15 @@
         "type": "int"
       }
     }
-  }
+  },
+  "notifDailyTitle": "Your daily reward is ready 🎁",
+  "notifDailyBody": "The bazaar has a gift waiting for you. Come and claim it!",
+  "notifStreakTitle": "Keep your streak alive 🔥",
+  "notifStreakBody": "Today's challenge is waiting — don't lose your streak.",
+  "notifAreaTitle": "A new part of the bazaar is open",
+  "notifAreaBody": "Fresh stalls are waiting to be restored.",
+  "notifPromptTitle": "Want a friendly reminder?",
+  "notifPromptBody": "We'll tell you when your daily reward is ready or your streak is at risk. At most once a day, never at night.",
+  "notifPromptYes": "Yes, remind me",
+  "notifPromptNo": "Not now"
 }

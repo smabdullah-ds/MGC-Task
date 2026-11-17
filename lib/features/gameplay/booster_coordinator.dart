@@ -88,7 +88,6 @@ class BoosterCoordinator {
         if (s == null) return false;
         analytics.coinsSpent(amount: coins, sink: name);
       case PaySource.ad:
-        analytics.adRequest(format: 'rewarded', placement: placement.name);
         final ok = await ads.showRewarded(placement);
         if (!ok) return false;
         onRewardedShown?.call();

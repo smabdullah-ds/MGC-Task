@@ -3,6 +3,7 @@ import 'package:bazaar_sort/app/routes.dart';
 import 'package:bazaar_sort/core/economy/bazaar_catalog.dart';
 import 'package:bazaar_sort/core/economy/daily_progress.dart';
 import 'package:bazaar_sort/core/economy/player_state.dart';
+import 'package:bazaar_sort/features/daily/reminder_scheduler.dart';
 import 'package:bazaar_sort/features/meta/bazaar_providers.dart';
 import 'package:bazaar_sort/features/player/player_store.dart';
 import 'package:bazaar_sort/features/splash/splash_screen.dart';
@@ -13,11 +14,60 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Home: play button, coins, bazaar progress, daily, shop and settings.
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const new({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  /// Reminders are offered once, after the player has had a few wins.
+  static const int _askAfterLevel = 5;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeAskReminders());
+  }
+
+  Future<void> _maybeAskReminders() async {
+    final p = ref.read(playerProvider);
+    if (!mounted ||
+        p.settings.notificationsAsked ||
+        p.nextLevel <= _askAfterLevel) {
+      return;
+    }
+    final l10n = context.l10n;
+    final yes = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        key: const ValueKey('reminder_prompt'),
+        icon: const Icon(Icons.notifications_active_rounded),
+        title: Text(l10n.notifPromptTitle),
+        content: Text(l10n.notifPromptBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.notifPromptNo),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.notifPromptYes),
+          ),
+        ],
+      ),
+    );
+    final scheduler = ref.read(reminderSchedulerProvider);
+    if (yes ?? false) {
+      await scheduler.optIn();
+    } else {
+      await scheduler.decline();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
     final player = ref.watch(playerProvider);
     final catalog = ref.watch(bazaarCatalogProvider);
@@ -134,7 +184,11 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  bool _canRestoreSomething(BazaarCatalog c, int coins, PlayerState player) {
+  static bool _canRestoreSomething(
+    BazaarCatalog c,
+    int coins,
+    PlayerState player,
+  ) {
     final next = c.nextItem(player);
     return next != null && coins >= c.costOf(next);
   }

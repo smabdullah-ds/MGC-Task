@@ -8,7 +8,7 @@
 | 4. Playable game | ✅ Done | Flame board (vector `ItemSkin`, arc moves ~250 ms, lift/shake/pop, sparkles, confetti), tap + drag input, HUD + booster bar, win/fail/pause panels, tutorial coach + guide hand, synthesized SFX/music, haptics, Hive save with atomic writes; widget tests for win and fail flows |
 | 5. Economy + bazaar + daily | ✅ Done | Coins/boosters economy, 4 bazaar areas (28 items) with area rewards, 7-day login calendar, date-seeded daily challenge + streak, rewarded free spin, shop with idempotent purchase granting, VIP daily bonus, 48 h starter pack |
 | 6. Real SDKs | ✅ Done | Firebase (Analytics, Crashlytics, Remote Config), UMP + ATT consent, AdMob with AppLovin/Unity/Meta/Mintegral mediation adapters (test IDs), RevenueCat; each used only when configured, fakes otherwise |
-| 7. Analytics, Remote Config, push | ⏳ | |
+| 7. Analytics, Remote Config, push | ✅ Done | Every spec event with consistent params, ad fill/revenue bridge, user properties (country tier, payer, ad-free, experiment), Remote Config refresh re-applies tuning live, opt-in reminders (≤ 1/day, quiet hours 22–09) + FCM registration |
 | 8. Polish | ⏳ | |
 | 9. Release prep | ⏳ | |
 
@@ -74,3 +74,10 @@ The release APK is signed with the debug key until Phase 9 adds the upload-key c
 - Android: Firebase Gradle plugins applied only if `android/app/google-services.json` exists; Mintegral Maven repo; core-library desugaring; AdMob app id from `ADMOB_APP_ID_ANDROID` (key.properties or env), test id by default.
 - iOS: `GADApplicationIdentifier` from `ADMOB_APP_ID_IOS` (git-ignored `ios/Flutter/Secrets.xcconfig`), ATT usage string, SKAdNetwork ids for Google + the four mediation networks.
 - **Not verified on a device**: this container has no Android SDK (dl.google.com is blocked here) and no Xcode, so native builds must be run on your machine.
+
+## Phase 7 details
+
+- **Events** (`services/analytics/game_analytics.dart`): level_start, level_complete (level, moves, optimal_moves, stars, duration_s, boosters_used), level_fail (reason), level_restart, booster_used (type, source = coins | ad | free | inventory), ad_request / ad_loaded / ad_impression (format, placement, network, value_micros, currency) / ad_reward_granted / ad_failed, iap_view, iap_purchase (product_id, price, currency), iap_failed, coins_earned (source) / coins_spent (sink), bazaar_item_restored, area_complete, daily_reward_claimed, daily_challenge_complete, tutorial_step, consent_result, settings_changed.
+- **User properties**: install_country_tier (tier1 = US/UK/CA/DE/AU + similar), payer, ad_free, exp_group.
+- **Remote Config**: all tuning keys in `config/remote_config_defaults.dart`; after a successful fetch the economy and difficulty providers are invalidated so new values apply without a restart. A/B tests: create them in Firebase on these keys and set `exp_group` per variant (see KPI.md).
+- **Reminders**: `ReminderPlanner` (pure, tested) + `ReminderScheduler`. Asked once in-game after level 5; only then is the OS permission requested. Rescheduled every time the app goes to the background.

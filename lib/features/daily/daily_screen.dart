@@ -85,8 +85,7 @@ class _DailyScreenState extends ConsumerState<DailyScreen>
 
   Future<void> _spin() async {
     final ads = ref.read(adsServiceProvider);
-    final analytics = ref.read(gameAnalyticsProvider)
-      ..adRequest(format: 'rewarded', placement: 'daily_spin');
+    final analytics = ref.read(gameAnalyticsProvider);
     setState(() => _spinning = true);
     final ok = await ads.showRewarded(RewardedPlacement.dailySpin);
     if (!mounted) return;

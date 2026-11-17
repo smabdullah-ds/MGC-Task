@@ -10,6 +10,7 @@ abstract final class Ev {
   static const levelRestart = 'level_restart';
   static const boosterUsed = 'booster_used';
   static const adRequest = 'ad_request';
+  static const adLoaded = 'ad_loaded';
   static const adImpression = 'ad_impression';
   static const adRewardGranted = 'ad_reward_granted';
   static const adFailed = 'ad_failed';
@@ -155,6 +156,10 @@ class GameAnalytics {
   /// Ad request.
   void adRequest({required String format, required String placement}) =>
       _log(Ev.adRequest, {'format': format, 'placement': placement});
+
+  /// An ad request filled.
+  void adLoaded({required String format}) =>
+      _log(Ev.adLoaded, {'format': format});
 
   /// Ad impression with revenue from the paid-event callback.
   void adImpression({
