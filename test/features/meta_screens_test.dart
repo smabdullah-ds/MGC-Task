@@ -160,10 +160,7 @@ void main() {
       );
       await tester.ensureVisible(find.byKey(const ValueKey('daily_spin')));
       await tester.pump();
-      await tester.tap(
-        find.byKey(const ValueKey('daily_spin')),
-        warnIfMissed: true,
-      );
+      await tester.tap(find.byKey(const ValueKey('daily_spin')));
       await settle(tester, 30);
       expect(deps.ads.rewardedShown, hasLength(1));
       expect(c.read(playerProvider).daily.lastFreeSpin, isNotNull);
