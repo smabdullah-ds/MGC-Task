@@ -1,17 +1,336 @@
 {
   "@@locale": "en",
   "appTitle": "Bazaar Sort",
-  "@appTitle": {"description": "App name"},
+  "@appTitle": {
+    "description": "App name"
+  },
   "loading": "Opening the bazaar…",
   "playLevel": "Play – Level {level}",
-  "@playLevel": {"placeholders": {"level": {"type": "int"}}},
+  "@playLevel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "level": "Level {level}",
-  "@level": {"placeholders": {"level": {"type": "int"}}},
+  "@level": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
   "coins": "{count} coins",
-  "@coins": {"placeholders": {"count": {"type": "int"}}},
+  "@coins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coinAmount": "{count}",
+  "@coinAmount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
   "shop": "Shop",
   "settings": "Settings",
   "bazaar": "Bazaar",
   "daily": "Daily",
-  "home": "Home"
+  "home": "Home",
+  "close": "Close",
+  "back": "Back",
+  "gotIt": "Got it",
+  "retry": "Retry",
+  "continueLabel": "Continue",
+  "watchAd": "Watch ad",
+  "adLabel": "AD",
+  "free": "Free",
+  "priceCoins": "{price} coins",
+  "@priceCoins": {
+    "placeholders": {
+      "price": {
+        "type": "int"
+      }
+    }
+  },
+  "notEnoughCoins": "Not enough coins",
+  "adUnavailable": "No video available right now. Please try again in a moment.",
+  "offline": "You're offline. The game still works — videos are unavailable.",
+  "errorGeneric": "Something went wrong. Please try again.",
+  "levelKindHard": "Hard",
+  "levelKindBoss": "Boss",
+  "levelKindDaily": "Daily challenge",
+  "movesLeft": "{count, plural, =1{1 move left} other{{count} moves left}}",
+  "@movesLeft": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "movesMade": "Moves: {count}",
+  "@movesMade": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pause": "Pause",
+  "paused": "Paused",
+  "resume": "Resume",
+  "restart": "Restart",
+  "boosterUndo": "Undo",
+  "boosterExtraShelf": "Shelf",
+  "boosterHint": "Hint",
+  "boosterShuffle": "Shuffle",
+  "offerUndoTitle": "More undos",
+  "offerUndoBody": "Get {count} more undos for this level.",
+  "@offerUndoBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "offerExtraShelfTitle": "Extra shelf",
+  "offerExtraShelfBody": "Add one empty shelf to make room (once per level).",
+  "offerHintTitle": "Hint",
+  "offerHintBody": "Show a good next move.",
+  "offerShuffleTitle": "Shuffle",
+  "offerShuffleBody": "Re-deal the goods. The level stays solvable.",
+  "offerExtraMovesTitle": "Extra moves",
+  "offerExtraMovesBody": "Get {count} more moves.",
+  "@offerExtraMovesBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "useOwned": "Use (×{count})",
+  "@useOwned": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "extraShelfUsed": "Extra shelf already used on this level.",
+  "noHint": "No hint found from here — try undo or a shuffle.",
+  "shuffleFailed": "Couldn't shuffle right now. Your booster was not used.",
+  "winTitle": "Bazaar sorted!",
+  "winMoves": "{moves} moves · target {target}",
+  "@winMoves": {
+    "placeholders": {
+      "moves": {
+        "type": "int"
+      },
+      "target": {
+        "type": "int"
+      }
+    }
+  },
+  "winCoins": "+{count}",
+  "@winCoins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "doubleCoins": "2× coins",
+  "bossBonus": "Boss bonus included!",
+  "stuckTitle": "No moves left",
+  "deadEndTitle": "This can't be solved from here",
+  "outOfMovesTitle": "Out of moves",
+  "failBody": "Use a booster to keep going, or try again.",
+  "extraMoves": "+{count} moves",
+  "@extraMoves": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tut_pick": "Tap a shelf to pick up the goods on top, then tap where they should go.",
+  "tut_match": "Goods only stack on the same goods. Fill a shelf with 4 of a kind!",
+  "tut_empty": "Empty shelves take any goods — use them to make room.",
+  "tut_undo": "Made a mistake? Undo it. You get 3 free undos every level.",
+  "tut_stars": "Solve in fewer moves to earn up to 3 stars.",
+  "tut_hint": "Stuck? A hint shows a good next move.",
+  "tut_partial": "If a shelf is nearly full, only the goods that fit will move.",
+  "tut_extra_shelf": "An extra shelf gives you room when things get tight.",
+  "tut_shuffle": "Shuffle re-deals the goods — the level always stays solvable.",
+  "tut_boss": "Boss level! A bit harder, with bonus coins.",
+  "tut_hidden": "Goods marked ? stay hidden until they reach the top of their shelf.",
+  "tut_locked": "Locked shelves open after you complete enough shelves.",
+  "tut_frozen": "Frozen goods thaw when a shelf right next to them is completed.",
+  "tut_move_limit": "This level has a move limit. Plan ahead!",
+  "restoredOf": "{restored} of {total} restored",
+  "@restoredOf": {
+    "placeholders": {
+      "restored": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "areaName": "{id, select, spice_market{Spice Market} lantern_street{Lantern Street} tea_house{Tea House} textile_lane{Textile Lane} other{The Bazaar}}",
+  "@areaName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "itemName": "{id, select, spice_awning{Striped awning} spice_sacks{Spice sacks} spice_scales{Brass scales} spice_counter{Carved counter} spice_lamps{Oil lamps} spice_sign{Market sign} lantern_arch{Lantern arch} lantern_strings{Lantern strings} lantern_stall{Lantern stall} lantern_fountain{Fountain} lantern_benches{Stone benches} lantern_tower{Clock tower} lantern_gate{Street gate} tea_carpets{Carpets} tea_samovar{Samovar} tea_cushions{Cushions} tea_tables{Low tables} tea_windows{Lattice windows} tea_dome{Painted dome} tea_garden{Rose garden} textile_looms{Looms} textile_dyes{Dye vats} textile_racks{Drying racks} textile_awnings{Silk awnings} textile_carts{Handcarts} textile_well{Old well} textile_minaret{Minaret} textile_gate{Grand gate} other{Stall}}",
+  "@itemName": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "restore": "Restore",
+  "restored": "Restored",
+  "locked": "Locked",
+  "areaLockedHint": "Finish {area} to open this area.",
+  "areaCompleteTitle": "{area} restored!",
+  "areaCompleteBody": "Reward: {coins} coins and boosters. A new area is open!",
+  "dailyRewardsTitle": "Daily rewards",
+  "dailyDay": "Day {day}",
+  "claim": "Claim",
+  "claimed": "Claimed",
+  "comeBackTomorrow": "Come back tomorrow!",
+  "dailyChallengeTitle": "Daily challenge",
+  "dailyChallengeBody": "A new puzzle every day. Keep your streak going!",
+  "dailyChallengePlay": "Play today's challenge",
+  "dailyChallengeDone": "Done for today ✓",
+  "streakDays": "{count, plural, =0{No streak yet} =1{1-day streak} other{{count}-day streak}}",
+  "freeSpinTitle": "Free daily spin",
+  "freeSpinButton": "Spin (watch ad)",
+  "spinUsed": "Spin again tomorrow",
+  "youWon": "You won {prize}!",
+  "rewardCoins": "{count} coins",
+  "rewardBooster": "{count}× {booster}",
+  "shopTitle": "Shop",
+  "removeAdsTitle": "Remove ads",
+  "removeAdsBody": "No more interstitials or banners + 500 coins. Rewarded videos stay optional.",
+  "starterPackTitle": "Starter pack",
+  "starterPackBody": "1,500 coins + 3 of each booster + no ads",
+  "starterPackEnds": "Ends in {time}",
+  "coinPack": "{count} coins",
+  "bestValue": "Best value",
+  "popular": "Popular",
+  "vipTitle": "VIP pass",
+  "vipBody": "No interstitials, 200 coins a day and 1 free booster a day.",
+  "vipPerWeek": "{price} / week",
+  "vipActive": "VIP active",
+  "boosterBundleTitle": "Booster bundle",
+  "boosterBundleBody": "3 of each booster",
+  "restorePurchases": "Restore purchases",
+  "purchasePending": "Purchase pending — we'll add it as soon as it's confirmed.",
+  "purchaseThanks": "Thank you! Your purchase was added.",
+  "purchaseRestored": "Purchases restored.",
+  "purchaseNothingToRestore": "Nothing to restore.",
+  "purchaseFailed": "Purchase didn't go through. You were not charged.",
+  "owned": "Owned",
+  "vipDailyBonus": "VIP daily bonus: {coins} coins and a free booster!",
+  "@areaLockedHint": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "@areaCompleteTitle": {
+    "placeholders": {
+      "area": {
+        "type": "String"
+      }
+    }
+  },
+  "@areaCompleteBody": {
+    "placeholders": {
+      "coins": {
+        "type": "int"
+      }
+    }
+  },
+  "@dailyDay": {
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@youWon": {
+    "placeholders": {
+      "prize": {
+        "type": "String"
+      }
+    }
+  },
+  "@rewardCoins": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "@rewardBooster": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "booster": {
+        "type": "String"
+      }
+    }
+  },
+  "@starterPackEnds": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "@coinPack": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "@vipPerWeek": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "@vipDailyBonus": {
+    "placeholders": {
+      "coins": {
+        "type": "int"
+      }
+    }
+  }
 }

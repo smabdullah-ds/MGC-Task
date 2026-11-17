@@ -2,6 +2,8 @@ import 'package:bazaar_sort/services/ads/ads_service.dart';
 import 'package:bazaar_sort/services/ads/fake_ads_service.dart';
 import 'package:bazaar_sort/services/analytics/analytics_service.dart';
 import 'package:bazaar_sort/services/analytics/fake_analytics_service.dart';
+import 'package:bazaar_sort/services/analytics/game_analytics.dart';
+import 'package:bazaar_sort/services/audio/feedback_service.dart';
 import 'package:bazaar_sort/services/consent/consent_service.dart';
 import 'package:bazaar_sort/services/consent/fake_consent_service.dart';
 import 'package:bazaar_sort/services/iap/fake_iap_service.dart';
@@ -47,4 +49,14 @@ final notificationServiceProvider = Provider<NotificationService>(
 /// UMP + ATT consent.
 final consentServiceProvider = Provider<ConsentService>(
   (ref) => FakeConsentService(),
+);
+
+/// Sound, music and haptics.
+final feedbackServiceProvider = Provider<FeedbackService>(
+  (ref) => FakeFeedbackService(),
+);
+
+/// Typed analytics events.
+final gameAnalyticsProvider = Provider<GameAnalytics>(
+  (ref) => GameAnalytics(ref.watch(analyticsServiceProvider)),
 );

@@ -9,4 +9,7 @@ abstract final class Routes {
   static const String shop = '/shop';
   static const String settings = '/settings';
   static const String screenshots = '/debug/screenshots';
+
+  /// Path that plays [level].
+  static String playLevel(int level) => '$play/$level';
 }

@@ -5,7 +5,7 @@
 | 1. Project setup | ✅ Done | Flutter 3.50 project, strict lints, Riverpod, go_router, env config, 7 service interfaces with fakes, CI |
 | 2. Core logic | ✅ Done | Immutable board model, move rules, 3 obstacle rule modules (hidden, locked, frozen), win/stuck, session with undo, move limits, boosters; 99% coverage |
 | 3. Solver + generator + 1,000 levels | ✅ Done | A* solver (admissible runs heuristic, canonical hashing, node/time limits, weighted fallback), seeded generator + saw-tooth difficulty curve (Remote Config overridable), shuffle booster, `tool/generate_levels.dart`; 1,000 levels bundled, 97% proven optimal, every one replay-verified in tests |
-| 4. Playable game | ⏳ | |
+| 4. Playable game | ✅ Done | Flame board (vector `ItemSkin`, arc moves ~250 ms, lift/shake/pop, sparkles, confetti), tap + drag input, HUD + booster bar, win/fail/pause panels, tutorial coach + guide hand, synthesized SFX/music, haptics, Hive save with atomic writes; widget tests for win and fail flows |
 | 5. Economy + bazaar + daily | ⏳ | |
 | 6. Real SDKs | ⏳ | |
 | 7. Analytics, Remote Config, push | ⏳ | |
@@ -37,3 +37,23 @@
 - `lib/core/level_gen/difficulty_curve.dart` — tutorial ramp (K 2→4 over levels 1–10), power-curve growth to K = 10, hard every 5th, breather after, boss every 10th, one empty shelf on late hard levels; obstacles from 20 (hidden), 40 (locked), 60 (frozen), 80 (move limit), each introduced alone. Every knob overridable via the `difficulty_curve_json` Remote Config key.
 - `tool/generate_levels.dart` — parallel generation into `assets/levels/levels_XXXX_YYYY.json`; `--check` replays all stored solutions.
 - Distribution (1,000 levels): kinds {tutorial 10, normal 594, breather 198, hard 99, boss 99}; obstacles {hidden 488, locked 298, frozen 295, move_limit 185}; median optimal moves 17 (1–100) → 31 (300+).
+
+## Phase 4 details
+
+- **Board**: `features/gameplay/board/` — `BoardGame` (Flame) renders `GameController` state; `BoardLayout` (pure geometry, tested) keeps every shelf a ≥ 48 dp target; `ItemComponent` tweens along a quadratic arc; `ShelfComponent` handles tap and drag-and-drop.
+- **Art**: `VectorItemSkin` draws 12 bazaar goods (spice jar, lantern, teacup, silk roll, oil bottle, rose pouch, rug, copper pot, mint tea, pomegranate, dates bowl, brass plate), each with its own silhouette *and* a colourblind symbol. Swap via `itemSkinProvider`.
+- **Flow**: `LevelFlow` saves the win (progress + coins in one write) *before* the win panel appears, so killing the app on the win screen loses nothing; the 2× coins grant is idempotent (`LastWin.doubled`).
+- **Dead ends**: after each move the solver runs in an isolate; a position proven unwinnable shows the stuck panel even if legal moves remain.
+- **Audio**: `tool/synth_audio.py` synthesizes original SFX and a Hijaz-scale music loop (≈ 390 KB of MP3).
+- **Storage**: `HiveStorageService` keeps the save as one JSON document plus a `.bak` copy of the previous version.
+
+### APK milestone (run on your machine — this container has no Android SDK)
+
+```bash
+flutter pub get
+flutter build apk --release                     # uses fake/test services, no keys needed
+adb install -r build/app/outputs/flutter-apk/app-release.apk
+# or: flutter run --release   (with a phone connected over USB, USB debugging on)
+```
+
+The release APK is signed with the debug key until Phase 9 adds the upload-key config.
