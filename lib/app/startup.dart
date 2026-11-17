@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bazaar_sort/features/player/player_store.dart';
+import 'package:bazaar_sort/features/player/session_tasks.dart';
+import 'package:bazaar_sort/features/shop/shop_controller.dart';
 import 'package:bazaar_sort/services/ads/ad_types.dart';
 import 'package:bazaar_sort/services/consent/consent_service.dart';
 import 'package:bazaar_sort/services/service_providers.dart';
@@ -79,7 +81,11 @@ class Startup {
                   : AdPersonalization.none,
             ),
       ),
-      guard('iap', () => _ref.read(iapServiceProvider).initialize()),
+      guard('iap', () async {
+        await _ref.read(iapServiceProvider).initialize();
+        _ref.read(shopControllerProvider).listenForUpdates();
+        await _ref.read(sessionTasksProvider).onAppOpen();
+      }),
       guard(
         'notifications',
         () => _ref.read(notificationServiceProvider).initialize(),

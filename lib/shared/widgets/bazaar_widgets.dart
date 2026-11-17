@@ -222,3 +222,37 @@ class _PatternPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _PatternPainter old) => old.dark != dark;
 }
+
+/// Two-column grid whose rows grow with their content, so large system font
+/// sizes (Dynamic Type) never overflow a fixed tile height.
+class TwoColumnGrid extends StatelessWidget {
+  const new({required this.children, this.spacing = 12, super.key});
+
+  final List<Widget> children;
+  final double spacing;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <Widget>[];
+    for (var i = 0; i < children.length; i += 2) {
+      if (rows.isNotEmpty) rows.add(SizedBox(height: spacing));
+      rows.add(
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: children[i]),
+              SizedBox(width: spacing),
+              Expanded(
+                child: i + 1 < children.length
+                    ? children[i + 1]
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(children: rows);
+  }
+}

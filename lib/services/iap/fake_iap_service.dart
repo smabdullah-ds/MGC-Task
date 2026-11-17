@@ -20,6 +20,7 @@ class FakeIapService implements IapService {
     'coins_m': 4.99,
     'coins_l': 9.99,
     'coins_xl': 19.99,
+    'booster_bundle': 2.99,
     'vip_weekly': 2.99,
   };
 

@@ -6,7 +6,7 @@
 | 2. Core logic | ✅ Done | Immutable board model, move rules, 3 obstacle rule modules (hidden, locked, frozen), win/stuck, session with undo, move limits, boosters; 99% coverage |
 | 3. Solver + generator + 1,000 levels | ✅ Done | A* solver (admissible runs heuristic, canonical hashing, node/time limits, weighted fallback), seeded generator + saw-tooth difficulty curve (Remote Config overridable), shuffle booster, `tool/generate_levels.dart`; 1,000 levels bundled, 97% proven optimal, every one replay-verified in tests |
 | 4. Playable game | ✅ Done | Flame board (vector `ItemSkin`, arc moves ~250 ms, lift/shake/pop, sparkles, confetti), tap + drag input, HUD + booster bar, win/fail/pause panels, tutorial coach + guide hand, synthesized SFX/music, haptics, Hive save with atomic writes; widget tests for win and fail flows |
-| 5. Economy + bazaar + daily | ⏳ | |
+| 5. Economy + bazaar + daily | ✅ Done | Coins/boosters economy, 4 bazaar areas (28 items) with area rewards, 7-day login calendar, date-seeded daily challenge + streak, rewarded free spin, shop with idempotent purchase granting, VIP daily bonus, 48 h starter pack |
 | 6. Real SDKs | ⏳ | |
 | 7. Analytics, Remote Config, push | ⏳ | |
 | 8. Polish | ⏳ | |
@@ -57,3 +57,10 @@ adb install -r build/app/outputs/flutter-apk/app-release.apk
 ```
 
 The release APK is signed with the debug key until Phase 9 adds the upload-key config.
+
+## Phase 5 details
+
+- **Economy** (`core/economy/`): `Progression` (level coins = 20 + 10/star + 50 boss), `BazaarCatalog` (Spice Market 1,300 coins ≈ 25 levels for a non-payer, rising to 150–600 per item), `DailyProgress` (calendar, challenge streak +20 coins/day up to 7, spin wheel), `PurchaseGranter`, `InterstitialPolicy`. All pure Dart, all tested.
+- **Purchases**: each transaction id is granted once (`PurchaseState.grantedTransactions`); restores re-apply only entitlements (never coins); refunds remove entitlements; pending purchases are granted when the store update arrives.
+- **Screens**: Bazaar (area sections, restore with animation, area-complete dialog, banner slot behind a Remote Config switch), Daily (calendar, challenge, spin wheel), Shop (store-localized prices, owned states, restore purchases, starter-pack countdown).
+- **Booster bundle** (`booster_bundle`, $2.99, 3 of each booster) added to satisfy "booster bundles" in the shop spec — not in the original price table, so create it in the stores or remove it from `Products.all`.
