@@ -50,11 +50,27 @@ android {
             secret("ADMOB_APP_ID_ANDROID", "ca-app-pub-3940256099942544~3347511713")
     }
 
+    // Upload key from android/key.properties (git-ignored; see RELEASE.md):
+    //   storeFile=../upload-keystore.jks  storePassword=…  keyAlias=upload  keyPassword=…
+    // Without it, release builds fall back to the debug key so local
+    // `flutter run --release` still works — Play Console rejects those.
+    val hasUploadKey = secret("storeFile").isNotEmpty()
+    signingConfigs {
+        if (hasUploadKey) {
+            create("release") {
+                storeFile = file(secret("storeFile"))
+                storePassword = secret("storePassword")
+                keyAlias = secret("keyAlias")
+                keyPassword = secret("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig =
+                if (hasUploadKey) signingConfigs.getByName("release")
+                else signingConfigs.getByName("debug")
         }
     }
 }

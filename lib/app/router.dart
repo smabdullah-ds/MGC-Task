@@ -3,6 +3,7 @@ import 'package:bazaar_sort/features/daily/daily_screen.dart';
 import 'package:bazaar_sort/features/gameplay/screens/gameplay_screen.dart';
 import 'package:bazaar_sort/features/home/home_screen.dart';
 import 'package:bazaar_sort/features/meta/bazaar_screen.dart';
+import 'package:bazaar_sort/features/screenshots/screenshot_scenes.dart';
 import 'package:bazaar_sort/features/settings/settings_screen.dart';
 import 'package:bazaar_sort/features/shop/shop_screen.dart';
 import 'package:bazaar_sort/features/splash/splash_screen.dart';
@@ -36,6 +37,11 @@ GoRouter buildRouter({String initialLocation = Routes.splash}) => GoRouter(
     GoRoute(path: Routes.bazaar, builder: (_, _) => const BazaarScreen()),
     GoRoute(path: Routes.shop, builder: (_, _) => const ShopScreen()),
     GoRoute(path: Routes.settings, builder: (_, _) => const SettingsScreen()),
+    if (screenshotsEnabled)
+      GoRoute(
+        path: Routes.screenshots,
+        builder: (_, _) => const ScreenshotScenesScreen(),
+      ),
   ],
 );
 

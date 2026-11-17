@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:bazaar_sort/app/router.dart';
 import 'package:bazaar_sort/app/theme.dart';
+import 'package:bazaar_sort/config/remote_config_defaults.dart';
 import 'package:bazaar_sort/features/daily/reminder_scheduler.dart';
+import 'package:bazaar_sort/features/gameplay/level_flow.dart';
 import 'package:bazaar_sort/features/player/player_store.dart';
 import 'package:bazaar_sort/features/player/session_tasks.dart';
 import 'package:bazaar_sort/features/settings/locales.dart';
@@ -38,6 +40,27 @@ class _BazaarSortAppState extends ConsumerState<BazaarSortApp> {
   void _onResume() {
     ref.read(feedbackServiceProvider).resumeMusic();
     unawaited(ref.read(sessionTasksProvider).onAppOpen());
+    unawaited(_maybeShowAppOpenAd());
+  }
+
+  /// App-open ads (Remote Config switch, off by default): only for returning
+  /// players past the tutorial, never for ad-free players, and never within
+  /// the interstitial cooldown.
+  Future<void> _maybeShowAppOpenAd() async {
+    final rc = ref.read(remoteConfigServiceProvider);
+    if (!rc.getBool(RcKeys.appOpenEnabled)) return;
+    final player = ref.read(playerProvider);
+    final now = DateTime.now();
+    if (player.purchases.removeAds || player.purchases.vipActiveAt(now)) return;
+    final policy = ref.read(levelFlowProvider).policy;
+    if (player.nextLevel <= policy.config.minLevel) return;
+    final last = policy.lastRewardedAt;
+    if (last != null && now.difference(last) < policy.config.afterRewarded) {
+      return;
+    }
+    if (await ref.read(adsServiceProvider).showAppOpen()) {
+      policy.recordShown(DateTime.now());
+    }
   }
 
   @override

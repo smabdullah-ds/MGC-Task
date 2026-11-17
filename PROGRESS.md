@@ -10,7 +10,7 @@
 | 6. Real SDKs | ✅ Done | Firebase (Analytics, Crashlytics, Remote Config), UMP + ATT consent, AdMob with AppLovin/Unity/Meta/Mintegral mediation adapters (test IDs), RevenueCat; each used only when configured, fakes otherwise |
 | 7. Analytics, Remote Config, push | ✅ Done | Every spec event with consistent params, ad fill/revenue bridge, user properties (country tier, payer, ad-free, experiment), Remote Config refresh re-applies tuning live, opt-in reminders (≤ 1/day, quiet hours 22–09) + FCM registration |
 | 8. Polish | ✅ Done | Full settings screen, 8 locales scaffolded (en shipped, others in debug/QA builds) with RTL verified, material_ui localization fix, cached vector art for low-end devices, Dynamic Type at 1.6× verified on every screen |
-| 9. Release prep | ⏳ | |
+| 9. Release prep | ✅ Done | Icon + splash (generated from code), store-screenshot route, versioning + Android upload-key signing, iOS settings (Podfile 15.0, privacy manifest in target), README, RELEASE.md, KPI.md, docs/PRIVACY.md |
 
 ## Decisions log
 
@@ -90,3 +90,16 @@ The release APK is signed with the debug key until Phase 9 adds the upload-key c
 - **RTL**: Arabic verified on home, gameplay, shop, bazaar, daily and settings with no overflow; directional paddings throughout. The board itself stays LTR by design (shelf order is spatial, not text).
 - **Performance**: item and shelf art is recorded once into `Picture`s (`PictureCache`, LRU 256) and replayed each frame; lock labels cache their `TextPainter`; the background pattern sits in its own `RepaintBoundary`. Solver work always runs in isolates.
 - **Accessibility**: colourblind symbols on every good, 48 dp minimum targets (board hit areas included), semantics labels on buttons, coin pill, stars and the board, layouts that grow with system font size.
+
+## Phase 9 details
+
+- **Branding**: `tool/make_brand_assets.py` draws the icon, adaptive foreground and splash mark; `flutter_launcher_icons` + `flutter_native_splash` generate the platform assets (configs in `pubspec.yaml`).
+- **Screenshots**: `/debug/screenshots` (debug/profile, or `--dart-define=SCREENSHOTS=true`) — five captioned scenes: staged board, bazaar, obstacles, daily, colourblind board.
+- **Android signing**: `android/key.properties` (git-ignored, template `key.properties.example`); release falls back to the debug key only when no upload key is configured.
+- **iOS**: deployment target 15.0 (project + Podfile), portrait only, `PrivacyInfo.xcprivacy` added to the Runner target's resources, ATT string, SKAdNetwork ids, AdMob id via `Secrets.xcconfig`, `ITSAppUsesNonExemptEncryption = NO`.
+- **Ads, last fixes**: app-open ads shown on resume when the Remote Config switch is on (never for ad-free players, never in the tutorial, not right after a rewarded ad); the daily-spin rewarded ad now also pauses interstitials for 3 minutes.
+
+## Final state
+
+- `flutter analyze --fatal-infos`: 0 issues. `flutter test`: 203 passing. `lib/core` coverage: 99.1%.
+- Not verified here: native Android/iOS builds and on-device behaviour (this container has no Android SDK — dl.google.com is blocked by its network policy — and no Xcode). Run the RELEASE.md §2–3 steps on your machine.

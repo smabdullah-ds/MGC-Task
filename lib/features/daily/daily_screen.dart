@@ -5,6 +5,7 @@ import 'package:bazaar_sort/app/palette.dart';
 import 'package:bazaar_sort/app/routes.dart';
 import 'package:bazaar_sort/core/economy/booster.dart';
 import 'package:bazaar_sort/core/economy/daily_progress.dart';
+import 'package:bazaar_sort/features/gameplay/level_flow.dart';
 import 'package:bazaar_sort/features/player/player_store.dart';
 import 'package:bazaar_sort/l10n/gen/app_localizations.dart';
 import 'package:bazaar_sort/services/ads/ad_types.dart';
@@ -95,6 +96,7 @@ class _DailyScreenState extends ConsumerState<DailyScreen>
       return;
     }
     analytics.adRewardGranted(placement: 'daily_spin');
+    ref.read(levelFlowProvider).onRewardedShown();
     final slot = math.Random().nextInt(DailyProgress.wheel.length);
     final store = ref.read(playerProvider.notifier);
     final result = _daily.spin(store.current, DateTime.now(), slot);

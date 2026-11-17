@@ -43,6 +43,8 @@ dependencies:
   url_launcher: ^6.3.3
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.8
   flutter_test:
     sdk: flutter
   mocktail: ^1.0.5
@@ -54,3 +56,22 @@ flutter:
   assets:
     - assets/levels/
     - assets/audio/
+
+# App icons: `dart run flutter_launcher_icons` (source art in assets/branding).
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/icon.png
+  remove_alpha_ios: true
+  adaptive_icon_background: "#2B1B10"
+  adaptive_icon_foreground: assets/branding/icon_foreground.png
+  min_sdk_android: 24
+
+# Native splash: `dart run flutter_native_splash:create`.
+flutter_native_splash:
+  color: "#2B1B10"
+  image: assets/branding/splash.png
+  android_12:
+    color: "#2B1B10"
+    image: assets/branding/icon_foreground.png
+  fullscreen: true
