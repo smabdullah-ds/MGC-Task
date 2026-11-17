@@ -28,7 +28,7 @@ final class GameRules {
   /// Number of items that would leave shelf [index] in a move: the top run of
   /// one type, stopping at hidden or frozen items. 0 if nothing can be taken.
   int movableRun(BoardState board, int index) {
-    if (_pickRejection(board, index) != null) return 0;
+    if (pickRejection(board, index) != null) return 0;
     final items = board.shelves[index].items;
     final type = items.last.type;
     var run = 1;
@@ -40,7 +40,8 @@ final class GameRules {
     return run;
   }
 
-  MoveRejection? _pickRejection(BoardState board, int index) {
+  /// Why nothing can be picked up from shelf [index], or `null` if it can.
+  MoveRejection? pickRejection(BoardState board, int index) {
     final shelf = board.shelves[index];
     if (shelf.isEmpty) return MoveRejection.sourceEmpty;
     if (shelf.isComplete(board.capacity)) return MoveRejection.sourceComplete;
@@ -55,7 +56,7 @@ final class GameRules {
   bool canPick(BoardState board, int index) =>
       index >= 0 &&
       index < board.shelfCount &&
-      _pickRejection(board, index) == null;
+      pickRejection(board, index) == null;
 
   /// Why [move] is illegal, or `null` if it is legal.
   MoveRejection? validate(BoardState board, Move move) {
@@ -64,7 +65,7 @@ final class GameRules {
       return MoveRejection.outOfRange;
     }
     if (move.from == move.to) return MoveRejection.sameShelf;
-    final pick = _pickRejection(board, move.from);
+    final pick = pickRejection(board, move.from);
     if (pick != null) return pick;
     for (final m in modules) {
       final r = m.checkDrop(board, move.to);
@@ -86,7 +87,7 @@ final class GameRules {
   List<Move> legalMoves(BoardState board) {
     final moves = <Move>[];
     for (var from = 0; from < board.shelfCount; from++) {
-      if (_pickRejection(board, from) != null) continue;
+      if (pickRejection(board, from) != null) continue;
       for (var to = 0; to < board.shelfCount; to++) {
         if (to != from && validate(board, Move(from, to)) == null) {
           moves.add(Move(from, to));
@@ -153,7 +154,7 @@ final class GameRules {
   bool isStuck(BoardState board) {
     if (isWon(board)) return false;
     for (var from = 0; from < board.shelfCount; from++) {
-      if (_pickRejection(board, from) != null) continue;
+      if (pickRejection(board, from) != null) continue;
       for (var to = 0; to < board.shelfCount; to++) {
         if (to != from && validate(board, Move(from, to)) == null) {
           return false;
